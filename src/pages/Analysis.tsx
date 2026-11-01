@@ -1323,7 +1323,7 @@ Text to analyze:
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
+      model: 'openai/gpt-oss-120b',
       messages: [
         { role: 'system', content: 'You are an expert scholar of Vedic literature with deep knowledge of Sanskrit texts, their meanings, and spiritual significance.' },
         { role: 'user', content: prompts[type] }
