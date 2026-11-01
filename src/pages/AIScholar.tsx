@@ -5,6 +5,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Bot, Send, User, HelpCircle, Loader2, Globe, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface Message {
   id: string;
@@ -102,7 +104,7 @@ Get your free Groq API key at: https://console.groq.com`;
 - Vedic philosophy and Upanishadic concepts
 
 Provide accurate, scholarly responses. When discussing mantras, include Sanskrit terms where relevant.
-Be concise but thorough. Cite sources when possible.
+Use clear, simple paragraphs by default, with Markdown for emphasis and headings when helpful. Use lists only when they improve readability. Avoid tables unless information genuinely needs a side-by-side comparison or tabular layout. Be concise but thorough, and cite sources when possible.
 
 ${webContext ? `\n\nRelevant web search results:\n${webContext}\n\nUse these sources to enhance your response where relevant.` : ''}`;
 
@@ -355,9 +357,19 @@ ${webContext ? `\n\nRelevant web search results:\n${webContext}\n\nUse these sou
                               : 'bg-secondary'
                           )}
                         >
-                          <p className="whitespace-pre-wrap text-sm leading-relaxed">
-                            {message.content}
-                          </p>
+                          {message.role === 'assistant' ? (
+                            <div className="max-w-full overflow-x-auto">
+                              <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-li:text-foreground prose-a:text-primary">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                  {message.content}
+                                </ReactMarkdown>
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                              {message.content}
+                            </p>
+                          )}
                           {/* Source citation footer for assistant messages */}
                           {message.role === 'assistant' && message.content && !message.content.includes('API Key Required') && (
                             <div className="mt-3 pt-3 border-t border-border/30">
